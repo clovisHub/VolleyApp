@@ -4,5 +4,5 @@ object Config {
 
     private val baseUrl = "https://jsonplaceholder.typicode.com"
 
-
+    fun getBaseUrl() = baseUrl
 }
