@@ -7,17 +7,23 @@ import com.android.volley.Response
 import com.android.volley.toolbox.*
 import com.clovis.volleyapp.VolleyApp
 import com.clovis.volleyapp.util.Config
+import com.android.volley.toolbox.ImageLoader
+import android.graphics.Bitmap
+import android.support.v4.util.LruCache
+import com.clovis.volleyapp.models.Data
+import com.clovis.volleyapp.models.Post
+import com.clovis.volleyapp.repository.Repository
 
-class SimpleResquest (context: Context) {
+class SimpleRequest (private val context: Context): Repository {
 
     companion object {
 
         @Volatile
-        private var INSTANCE: SimpleResquest? = null
+        private var INSTANCE: SimpleRequest? = null
 
         fun getInstance(context: Context) =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: SimpleResquest(context).also {
+                INSTANCE ?: SimpleRequest(context).also {
                     INSTANCE = it
                 }
             }
@@ -27,7 +33,26 @@ class SimpleResquest (context: Context) {
         Volley.newRequestQueue(context.applicationContext)
     }
 
-  fun createSimpleRequest(context: VolleyApp, endPoint: String) {
+    override fun getImageLoader(context: VolleyApp): ImageLoader {
+
+        val imageLoader = ImageLoader(requestQueue, object : ImageLoader.ImageCache {
+            private val mCache : LruCache<String, Bitmap?> = LruCache(10)
+
+            override fun putBitmap(url: String, bitmap: Bitmap) {
+                mCache.put(url, bitmap)
+            }
+
+            override fun getBitmap(url: String): Bitmap? {
+                return mCache.get(url)
+            }
+        })
+
+        return imageLoader
+    }
+
+
+    override fun createSimpleRequest(context: VolleyApp, endPoint: String) {
+
       // Instantiate the RequestQueue.
       val queue = Volley.newRequestQueue(context)
       val urlBuilder = StringBuilder()
@@ -48,7 +73,7 @@ class SimpleResquest (context: Context) {
        queue.add(stringRequest)
   }
 
-    fun makeAstandardRequest(context: VolleyApp, endPoint: String) {
+    override fun makeAstandardRequest(context: VolleyApp, endPoint: String) {
 
         val urlBuilder = StringBuilder()
 
@@ -64,41 +89,32 @@ class SimpleResquest (context: Context) {
             }
         )
 
-        SimpleResquest.getInstance(context).addToRequestQueue(jsonObjectRequest)
+        SimpleRequest.getInstance(context).addToRequestQueue(jsonObjectRequest)
     }
+
+    override fun makeCustomerRequest() {
+        val request: RequestQueue = SimpleRequest.getInstance(context ).requestQueue
+
+        val urlBuilder = StringBuilder()
+        urlBuilder.append(Config.getBaseUrl())
+        urlBuilder.append("/posts")
+        ///posts/1/comments
+
+        val headers: HashMap <String, String>? = HashMap()
+        headers?.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
+
+        val customRequest = CustomRequest(urlBuilder.substring(0),
+            List::class.java,
+            headers,
+            MyListener(),
+            MyListener())
+
+        request.add(customRequest)
+    }
+
 
     private fun <T> addToRequestQueue(request: Request<T>) {
         requestQueue.add(request)
     }
-
-//    fun createCustomRequest(context: VolleyApp, endPoint: String) {
-//        // Instantiate the cache
-//        val cache = DiskBasedCache(cacheDir, 1024 * 1024) // 1MB cap
-//
-//        // Set up the network to use HttpURLConnection as the HTTP client.
-//        val network = BasicNetwork(HurlStack())
-//
-//        // Instantiate the RequestQueue with the cache and network. Start the queue.
-//        val requestQueue = RequestQueue(cache, network).apply {
-//            start()
-//        }
-//
-//        val url = "http://www.example.com"
-//
-//        // Formulate the request and handle the response.
-//        val stringRequest = StringRequest(Request.Method.GET, url,
-//            Response.Listener<String> { response ->
-//                // Do something with the response
-//            },
-//            Response.ErrorListener { error ->
-//                // Handle error
-//                val yse= "ERROR: %s".format(error.toString())
-//            })
-//
-//        // Add the request to the RequestQueue.
-//        requestQueue.add(stringRequest)
-//
-//
-//    }
 
 }
