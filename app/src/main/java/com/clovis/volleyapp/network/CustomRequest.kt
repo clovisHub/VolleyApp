@@ -4,7 +4,6 @@ import com.android.volley.*
 import com.android.volley.toolbox.HttpHeaderParser
 import com.android.volley.toolbox.ImageLoader
 import com.clovis.volleyapp.VolleyApp
-import com.clovis.volleyapp.models.Post
 import com.clovis.volleyapp.repository.Repository
 import com.clovis.volleyapp.util.Config
 import com.google.gson.Gson
@@ -30,6 +29,7 @@ class CustomRequest<T> (
             val json = String(
                 response?.data ?: ByteArray(0),
                 Charset.forName(HttpHeaderParser.parseCharset(response?.headers)))
+
             Response.success(
                 gson.fromJson(json, clazz),
                 HttpHeaderParser.parseCacheHeaders(response))
@@ -47,7 +47,7 @@ class CustomRequest<T> (
 
     private val volleyApp : VolleyApp by lazy { VolleyApp() }
 
-    override fun makeCustomerRequest() {
+    override fun <T> makeCustomerRequest(endpoint:String, obj: Class<T>) {
 
         val request: RequestQueue = SimpleRequest.getInstance(volleyApp).requestQueue
 
@@ -60,7 +60,7 @@ class CustomRequest<T> (
         headers?.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
 
         val customRequest = CustomRequest(urlBuilder.substring(0),
-            List::class.java,
+            obj,
             headers,
             MyListener(),
             MyListener())

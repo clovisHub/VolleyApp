@@ -1,6 +1,7 @@
 package com.clovis.volleyapp.repository
 
 import android.content.Context
+import com.clovis.volleyapp.models.Post
 import com.clovis.volleyapp.network.SimpleRequest
 
 object RepositoryCall{
@@ -9,7 +10,12 @@ object RepositoryCall{
 
     fun getComments(context: Context) {
         repository = SimpleRequest.getInstance(context)
-        repository.makeCustomerRequest()
+        repository.makeCustomerRequest("/posts", List::class.java)
+    }
+
+    fun fectchSinglePost(context: Context, id:String) {
+        repository = SimpleRequest.getInstance(context)
+        repository.makeCustomerRequest("/posts/$id", Post::class.java)
     }
 
 }

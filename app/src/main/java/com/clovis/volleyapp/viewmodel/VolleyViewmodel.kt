@@ -7,6 +7,8 @@ import com.clovis.volleyapp.repository.RepositoryCall
 class VolleyViewmodel(private val app: VolleyApp): AndroidViewModel(app) {
 
     fun fetchPosts() {
-        RepositoryCall.getComments(app)
+        //RepositoryCall.getComments(app)
+        RepositoryCall.fectchSinglePost(app, "1")
     }
+
 }

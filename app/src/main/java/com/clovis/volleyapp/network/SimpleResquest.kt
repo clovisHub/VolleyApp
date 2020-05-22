@@ -1,6 +1,7 @@
 package com.clovis.volleyapp.network
 
 import android.content.Context
+import android.database.CursorJoiner
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -14,7 +15,7 @@ import com.clovis.volleyapp.models.Data
 import com.clovis.volleyapp.models.Post
 import com.clovis.volleyapp.repository.Repository
 
-class SimpleRequest (private val context: Context): Repository {
+class SimpleRequest(private val context: Context): Repository {
 
     companion object {
 
@@ -92,26 +93,26 @@ class SimpleRequest (private val context: Context): Repository {
         SimpleRequest.getInstance(context).addToRequestQueue(jsonObjectRequest)
     }
 
-    override fun makeCustomerRequest() {
+    override fun <T> makeCustomerRequest(endpoint:String, obj : Class<T>) {
         val request: RequestQueue = SimpleRequest.getInstance(context ).requestQueue
 
         val urlBuilder = StringBuilder()
         urlBuilder.append(Config.getBaseUrl())
-        urlBuilder.append("/posts")
+        urlBuilder.append(endpoint)
         ///posts/1/comments
 
         val headers: HashMap <String, String>? = HashMap()
         headers?.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
 
         val customRequest = CustomRequest(urlBuilder.substring(0),
-            List::class.java,
+            obj,
             headers,
             MyListener(),
             MyListener())
 
         request.add(customRequest)
     }
-
+    private inline fun <reified T:Any> foo() = T::class.java
 
     private fun <T> addToRequestQueue(request: Request<T>) {
         requestQueue.add(request)

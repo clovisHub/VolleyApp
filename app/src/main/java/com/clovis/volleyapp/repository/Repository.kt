@@ -6,7 +6,7 @@ import com.clovis.volleyapp.VolleyApp
 
 interface Repository {
 
-    fun makeCustomerRequest()
+    fun <T> makeCustomerRequest(endpoint:String, obj: Class<T>)
 
     fun getImageLoader(context: VolleyApp): ImageLoader?
 
