@@ -13,5 +13,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val viewModel = VolleyViewModel(application as VolleyApp)
         viewModel.fetchPosts()
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.containerId, PostsListFragment.newInstance())
+            .commit()
     }
 }

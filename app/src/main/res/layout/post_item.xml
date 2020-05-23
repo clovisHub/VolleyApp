@@ -7,11 +7,12 @@
     </data>
     <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp">
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content">
 
         <TextView
                 tools:text="UserId"
-                android:text="@{post.userId}"
+                android:text="@{post.userId.toString()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/userId"
@@ -21,7 +22,7 @@
                 android:layout_marginTop="20dp"/>
         <TextView
                 tools:text="Body"
-                android:text="@{post.body}"
+                android:text="@{post.body.toString()}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/bodyId"
@@ -37,7 +38,7 @@
                 app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintVertical_bias="0.0"/>
         <TextView
                 tools:text="id"
-                android:text="@{post.id}"
+                android:text="@{post.id.toString()}"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:id="@+id/postId"
@@ -49,7 +50,7 @@
                 android:layout_marginEnd="8dp"/>
         <TextView
                 tools:text="Title"
-                android:text="@{post.title}"
+                android:text="@{post.title.toString()}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/titleId"
@@ -61,6 +62,19 @@
                 android:layout_marginStart="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/userId"
                 android:layout_marginTop="26dp"/>
-
+        <View
+                android:background="#CCCCCC"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:id="@+id/view"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintHorizontal_bias="0.0"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/bodyId"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"/>
     </android.support.constraint.ConstraintLayout>
 </layout>
